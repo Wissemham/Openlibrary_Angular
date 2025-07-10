@@ -1,0 +1,9 @@
+/* 100 % hauteur et pas de scroll global */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;            /* << plus de barre de scroll navigateur */
+}
+
+/* optionnel : masquer la scrollbar interne sur WebKit
+   .no-scrollbar::-webkit-scrollbar { display: none; } */

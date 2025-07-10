@@ -1,0 +1,127 @@
+
+<div class="flex flex-col min-h-screen bg-[#fefaf6] text-[#3c2f26] font-sans">
+  <!-- Header -->
+  <header class="sticky top-0 z-30 bg-[#fefaf6] py-6 px-4 flex flex-col items-center">
+    <div class="flex items-center space-x-3">
+      <div class="bg-[#f0e5db] p-2 rounded-xl">
+        <lucide-icon name="book-open" class="w-6 h-6 text-[#3c2f26]"></lucide-icon>
+      </div>
+      <h1 class="text-2xl font-bold">Open Library</h1>
+      <lucide-icon name="sparkles" class="w-4 h-4 text-sky-500"></lucide-icon>
+    </div>
+
+    <!-- Search Bar -->
+    <form class="mt-6 w-full max-w-2xl shadow-md rounded-xl overflow-hidden flex items-center bg-white" (ngSubmit)="onSearch(query)">
+      <div class="pl-4">
+        <lucide-icon name="search" class="w-5 h-5 text-[#8b6d5c]"></lucide-icon>
+      </div>
+      <input
+        [formControl]="searchControl"
+        (input)="searchSubmitted = false"
+        name="query"
+        type="text"
+        placeholder="Search for books, authors, or subjects..."
+        class="flex-grow px-4 py-3 placeholder-[#8b6d5c] text-[#3c2f26] focus:outline-none bg-transparent"
+        [disabled]="isLoading"
+      />
+      <button
+        type="submit"
+        class="bg-[#cbb7a3] hover:bg-[#b6a28d] text-white font-semibold px-6 py-3 transition"
+        [disabled]="isLoading || !query.trim()"
+      >
+        <ng-container *ngIf="isLoading; else lbl">
+          <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+        </ng-container>
+        <ng-template #lbl>Search</ng-template>
+      </button>
+    </form>
+  </header>
+
+  <!-- Content -->
+  <main class="flex flex-col items-center justify-center flex-grow text-center px-4">
+    <!-- Hero Section -->
+    <!-- Hero Section (initial state) -->
+    <div *ngIf="!isLoading && books.length === 0 && !searchSubmitted && !error" class="mt-20 mb-6">
+      <div class="bg-[#f0e5db] p-5 rounded-full mb-4 inline-flex items-center justify-center">
+        <lucide-icon name="book-open" class="w-10 h-10 text-[#8b6d5c]"></lucide-icon>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-bold mb-2">Discover Amazing Books</h2>
+      <p class="text-[#5f4e3e] max-w-md">Search through millions of books from the Open Library.</p>
+      <p class="text-[#5f4e3e] max-w-md">Find your next great read by title, author, or subject.</p>
+    </div>
+    <!-- No Results Found -->
+    <div *ngIf="!isLoading && books.length === 0 && searchSubmitted && query && !error" class="text-center py-16 animate-fade-in">
+      <div class="mx-auto w-16 h-16 bg-[#f0e5db] rounded-full flex items-center justify-center mb-6">
+        <lucide-icon name="search" class="w-8 h-8 text-[#8b6d5c]"></lucide-icon>
+      </div>
+      <h2 class="text-xl font-semibold text-[#3c2f26] mb-2">No Books Found</h2>
+      <p class="text-[#8b6d5c] max-w-md mx-auto">
+        We couldn't find any books matching "<span class="font-medium">{{ query }}</span>".<br />
+        Try searching with different keywords or check your spelling.
+      </p>
+    </div>
+    <!-- Error Message -->
+    <div *ngIf="error" class="max-w-md mx-auto py-8 animate-fade-in w-full">
+      <div class="border border-red-400 bg-red-50 text-red-700 p-4 rounded-xl mb-4 flex items-center gap-2">
+        {{ error }}
+      </div>
+      <div class="flex justify-center">
+        <button (click)="retry()" class="border border-red-400 text-red-600 px-6 py-2 rounded-xl hover:bg-red-100 font-medium">
+          Try Again
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading && books.length === 0" class="text-center py-16 animate-fade-in">
+      <div class="mx-auto w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-6 animate-pulse">
+        <lucide-icon name="book-open" class="w-8 h-8 text-amber-700 animate-pulse"></lucide-icon>
+      </div>
+      <div class="w-4 h-4 mx-auto border-2 border-amber-700 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-gray-500 mt-2">Searching books...</p>
+    </div>
+
+    <!-- Book Results -->
+    <div *ngIf="books.length > 0" class="w-full max-w-5xl mt-16">
+      <p class="mb-6 text-gray-500">
+        Showing {{ books.length }} of {{ total | number }} results
+      </p>
+
+      <div class="grid gap-6 md:gap-8">
+        <div *ngFor="let book of books; let i = index" [style.animationDelay]="(Math.min(i * 0.1, 1)) + 's'" class="animate-fade-in">
+          <div (click)="onBookClick(book)" class="group cursor-pointer hover:shadow-lg hover:-translate-y-1 bg-white border border-amber-100 rounded-xl overflow-hidden transition">
+            <div class="flex gap-4 p-6">
+              <ng-container *ngIf="book.cover_i; else noCover">
+                <img [src]="ol.getCoverUrl(book.cover_i, 'M')" alt="{{ book.title }}" class="w-20 h-28 rounded-lg shadow">
+              </ng-container>
+              <ng-template #noCover>
+                <div class="w-20 h-28 bg-amber-50 rounded-lg flex items-center justify-center shadow">
+                  <lucide-icon name="book-open" class="w-8 h-8 text-amber-300"></lucide-icon>
+                </div>
+              </ng-template>
+              <div>
+                <h3 class="font-semibold text-lg text-gray-800 mb-2">{{ book.title }}</h3>
+                <p class="text-sm text-gray-500">{{ ol.formatAuthors(book.author_name) }}</p>
+                <p class="text-sm text-gray-500">{{ book.first_publish_year }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button *ngIf="hasMore" (click)="onLoadMore()" class="mt-12 mx-auto block px-8 py-3 rounded-xl border-2 border-amber-700 hover:bg-amber-700 hover:text-white transition">
+        Load More Books
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-[#e7d8ca] py-8 text-center text-sm text-[#5f4e3e]">
+    Powered by
+    <a href="https://openlibrary.org" target="_blank" rel="noopener noreferrer" class="underline text-[#8b6d5c] hover:text-[#3c2f26]">
+      Open Library
+    </a>
+  </footer>
+</div>
+
+

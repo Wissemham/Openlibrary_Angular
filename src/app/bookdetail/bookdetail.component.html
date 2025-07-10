@@ -1,0 +1,122 @@
+<div class="min-h-screen bg-[#fefaf6] text-[#3c2f26] font-sans">
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <!-- Back Button -->
+    <button
+      (click)="handleBack()"
+      class="mb-8 inline-flex items-center gap-2 bg-[#f0e5db] text-[#8b6d5c] px-4 py-2 rounded-lg hover:bg-[#e4d7c8] transition"
+    >
+      <lucide-icon name="arrow-left" class="w-4 h-4"></lucide-icon>
+      Back to Results
+    </button>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="text-center py-16 animate-fade-in">
+      <div class="mx-auto w-16 h-16 bg-[#f0e5db] rounded-full flex items-center justify-center mb-6 animate-pulse">
+        <lucide-icon name="book-open" class="w-8 h-8 text-[#8b6d5c] animate-pulse"></lucide-icon>
+      </div>
+      <div class="w-4 h-4 mx-auto border-2 border-[#8b6d5c] border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-[#8b6d5c] mt-2">Loading book details...</p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error && !isLoading" class="max-w-md mx-auto py-8">
+      <div class="border border-red-400 bg-red-50 text-red-700 p-4 rounded-xl mb-4 flex items-center gap-2">
+        <lucide-icon name="alert-circle" class="w-5 h-5"></lucide-icon>
+        {{ error }}
+      </div>
+      <div class="flex justify-center">
+        <button (click)="fetchBookDetail()" class="border border-red-400 text-red-600 px-6 py-2 rounded-xl hover:bg-red-100 font-medium flex items-center gap-2">
+          <lucide-icon name="refresh-cw" class="w-4 h-4"></lucide-icon>
+          Try Again
+        </button>
+      </div>
+    </div>
+
+    <!-- Book Details -->
+    <div *ngIf="bookDetail && !isLoading" class="grid lg:grid-cols-3 gap-10">
+      <!-- Cover -->
+      <div class="lg:col-span-1">
+        <div class="rounded-xl shadow-lg overflow-hidden">
+          <ng-container *ngIf="bookDetail.covers?.[0] || bookDetail.cover_i; else noCover">
+            <img
+              [src]="ol.getCoverUrl(bookDetail.covers?.[0] || bookDetail.cover_i, 'L')"
+              [alt]="'Cover of ' + bookDetail.title"
+              class="w-full max-w-sm mx-auto rounded-xl"
+            />
+          </ng-container>
+          <ng-template #noCover>
+            <div class="aspect-[3/4] w-full max-w-sm mx-auto bg-[#f0e5db] rounded-xl flex items-center justify-center">
+              <lucide-icon name="book-open" class="w-10 h-10 text-[#cbb7a3]"></lucide-icon>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Main Details -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Title Card -->
+        <div class="bg-white rounded-xl shadow p-6">
+          <h2 class="text-3xl font-bold mb-2">{{ bookDetail.title }}</h2>
+          <p *ngIf="bookDetail.author_name" class="flex items-center gap-2 text-lg text-[#8b6d5c]">
+            <lucide-icon name="user" class="w-4 h-4"></lucide-icon>
+            {{ ol.formatAuthors(bookDetail.author_name) }}
+          </p>
+
+        <!-- Year of publication -->
+          <p
+            *ngIf="bookDetail.first_publish_date || bookDetail.publish_date?.length"
+            class="flex items-center gap-2 text-sm text-[#8b6d5c] mt-1"
+          >
+            <lucide-icon name="calendar" class="w-4 h-4"></lucide-icon>
+            Year of publication:
+            <!-- if first_publish_date exists, use it; otherwise take publish_date[0] -->
+            {{ bookDetail.first_publish_date
+          || bookDetail.publish_date?.[0]
+            }}
+          </p>
+          <!-- Created on OpenLibrary -->
+          <p
+            *ngIf="bookDetail.created?.value"
+            class="flex items-center gap-2 text-sm text-[#8b6d5c] mt-1"
+          >
+            <lucide-icon name="clock" class="w-4 h-4"></lucide-icon>
+            Created: {{ bookDetail.created?.value | date:'MMMM yyyy' }}
+          </p>
+        <!-- ISBN(s) -->
+        <p *ngIf="bookDetail.isbn_10?.length || bookDetail.isbn_13?.length"
+           class="flex flex-wrap items-center gap-2 text-sm text-[#8b6d5c] mt-1">
+          <lucide-icon name="book" class="w-4 h-4"></lucide-icon>
+          ISBN:
+          <ng-container *ngIf="bookDetail.isbn_10?.length">
+            {{ bookDetail.isbn_10?.join(', ') }}
+          </ng-container>
+          <ng-container *ngIf="bookDetail.isbn_13?.length">
+            {{ bookDetail.isbn_13?.join(', ') }}
+          </ng-container>
+        </p>
+      </div>
+        <!-- Description Card -->
+        <div *ngIf="ol.extractDescription(bookDetail.description)" class="bg-white rounded-xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-3">Description</h3>
+          <p class="text-[#5f4e3e] leading-relaxed">
+            {{ ol.extractDescription(bookDetail.description) }}
+          </p>
+        </div>
+
+        <!-- Extra Info -->
+        <div class="bg-white rounded-xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">Additional Information</h3>
+
+          <div *ngIf="bookDetail.subjects?.length">
+            <h4 class="font-semibold mb-2">Subjects</h4>
+            <div class="flex flex-wrap gap-2">
+              <span *ngFor="let subject of bookDetail.subjects?.slice(0, 20)" class="bg-[#f0e5db] text-[#3c2f26] text-xs px-3 py-1 rounded-full">
+                {{ subject }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
