@@ -1,29 +1,57 @@
+# OpenLibrary
 
-# Openlibrary_Angular
+A web application built with Angular 16.1.3 to search and explore books from the  [Open Library](https://openlibrary.org/) catalog.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.3.
+---
 
+## Features
+
+- Instant book search by title, author, or keyword with live debounce and manual search button
+
+-Paginated results (20 books per page) and "load more" functionality
+
+-Detailed book view: title, authors, publication year, description, ISBN, and high-quality cover image
+
+-Fully responsive design – works seamlessly on desktop, tablet, and mobile
+
+-Smooth navigation with Angular Router (supports browser back/forward)
+
+-Modern, accessible UI styled with Tailwind CSS and custom icons
+
+-Reliable unit tests with Jasmine & Karma to ensure code quality
+
+---
+
+## Demo
+
+*[( deployed demo link here, )](https://openlibrary-angular.vercel.app/)*
+
+---
+### Installation
+
+```bash
+git clone https://github.com/Wissemham/Openlibrary_Angular.git  
+cd Openlibrary_Angular
+npm install
+```
 ## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+Run `ng serve` for a dev server. 
+```
+Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
 ## Running unit tests
-
+```bash
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```
+## Technologies Used
+- Angular 16.1.3 (TypeScript)
 
-## Running end-to-end tests
+- RxJS
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- Angular Router
 
-## Further help
+- Tailwind CSS
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Jasmine & Karma for unit testing
 
