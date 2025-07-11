@@ -8,17 +8,17 @@ A web application built with Angular 16.1.3 to search and explore books from the
 
 - Instant book search by title, author, or keyword with live debounce and manual search button
 
--Paginated results (20 books per page) and "load more" functionality
+- Paginated results (20 books per page) and "load more" functionality
 
--Detailed book view: title, authors, publication year, description, ISBN, and high-quality cover image
+- Detailed book view: title, authors, publication year, description, ISBN, and high-quality cover image
 
--Fully responsive design – works seamlessly on desktop, tablet, and mobile
+- Fully responsive design – works seamlessly on desktop, tablet, and mobile
 
--Smooth navigation with Angular Router (supports browser back/forward)
+- Smooth navigation with Angular Router (supports browser back/forward)
 
--Modern, accessible UI styled with Tailwind CSS and custom icons
+- Modern, accessible UI styled with Tailwind CSS and custom icons
 
--Reliable unit tests with Jasmine & Karma to ensure code quality
+- Reliable unit tests with Jasmine & Karma to ensure code quality
 
 ---
 
